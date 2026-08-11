@@ -1,5 +1,7 @@
 # RTM Builder
 
+![screenshot](Screenshot.png)
+
 Converts a flat Requirement/Test/Defect traceability table (CSV, Excel, or
 Markdown) into a consolidated Requirement Traceability Matrix — one row per
 requirement, with linked tests, linked defects, coverage, and defect status.
