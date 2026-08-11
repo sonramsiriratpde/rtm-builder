@@ -29,12 +29,27 @@
   const downloadDiagramBtn = document.getElementById('downloadDiagramBtn');
   const diagramActions = document.getElementById('diagramActions');
   const filtersEl = document.getElementById('filters');
+  // const filterCoverage = document.getElementById('filterCoverage');
+  // const filterDefect = document.getElementById('filterDefect');
+
+  // let parsedTable = null; // { headers: [...], rows: [[...]] }
+  // let colMap = null; // { req: idx, test: idx, def: idx }
+  // let rtmRows = null; // computed matrix rows, for markdown export
+
   const filterCoverage = document.getElementById('filterCoverage');
   const filterDefect = document.getElementById('filterDefect');
+  const paginationEl = document.getElementById('pagination');
+  const pageSizeEl = document.getElementById('pageSize');
+  const prevPageBtn = document.getElementById('prevPageBtn');
+  const nextPageBtn = document.getElementById('nextPageBtn');
+  const pageInfoEl = document.getElementById('pageInfo');
 
   let parsedTable = null; // { headers: [...], rows: [[...]] }
   let colMap = null; // { req: idx, test: idx, def: idx }
   let rtmRows = null; // computed matrix rows, for markdown export
+  let filteredRows = []; // rtmRows after coverage/defect filters, for pagination
+  let currentPage = 1;
+  let pageSize = 10;
 
   // ---------- helpers ----------
   function escHtml(s) {
@@ -104,6 +119,18 @@
       .map((s) => '<div class="stat"><div class="n">' + s.n + '</div><div class="l">' + s.l + '</div></div>')
       .join('');
     statsEl.classList.add('show');
+  }
+
+  function formatDefects(r) {
+    if (!r.defects.length) return null;
+    return r.defects
+      .map((d) => {
+        const linked = r.defectTests && r.defectTests[d] ? r.defectTests[d] : [];
+        return linked.length
+          ? escHtml(d) + ' <span class="linked-test">(' + linked.map(escHtml).join(', ') + ')</span>'
+          : escHtml(d);
+      })
+      .join(', ');
   }
 
   function renderMatrix(rows) {
@@ -180,7 +207,7 @@
     if (!rtmRows) return;
     const covVal = filterCoverage.value;
     const defVal = filterDefect.value;
-    const filtered = rtmRows.filter((r) => {
+    filteredRows = rtmRows.filter((r) => {
       const covOk =
         covVal === 'all' ||
         (covVal === 'covered' && r.covered) ||
@@ -191,7 +218,8 @@
         (defVal === 'clear' && !r.hasDefects);
       return covOk && defOk;
     });
-    renderMatrix(filtered);
+    currentPage = 1;
+    renderPaginated();
   }
 
   // ---------- file handling ----------
@@ -244,6 +272,73 @@
     } else {
       showValidation('err', 'Unsupported file type. Use .csv, .xlsx, .xls, or .md.');
     }
+  }
+
+  // ---------- Show percentage next to each stat ----------
+
+  function pct(n, total) {
+    return total > 0 ? Math.round((n / total) * 100) : 0;
+  }
+
+  function renderStats(rows) {
+    const total = rows.length;
+    const covered = rows.filter((r) => r.covered).length;
+    const notCovered = total - covered;
+    const withDefects = rows.filter((r) => r.hasDefects).length;
+
+    statsEl.innerHTML = [
+      { n: total, l: 'Requirements', p: null },
+      { n: covered, l: 'Covered', p: pct(covered, total) },
+      { n: notCovered, l: 'Not covered', p: pct(notCovered, total) },
+      { n: withDefects, l: 'With defects', p: pct(withDefects, total) }
+    ]
+      .map(
+        (s) =>
+          '<div class="stat"><div class="n">' +
+          s.n +
+          (s.p !== null ? ' <span class="pct">(' + s.p + '%)</span>' : '') +
+          '</div><div class="l">' +
+          s.l +
+          '</div></div>'
+      )
+      .join('');
+    statsEl.classList.add('show');
+  }
+
+  function renderPaginated() {
+    const total = filteredRows.length;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * pageSize;
+    const pageRows = filteredRows.slice(start, start + pageSize);
+
+    renderMatrix(pageRows);
+
+    pageInfoEl.textContent =
+      total === 0 ? 'No results' : 'Page ' + currentPage + ' of ' + totalPages + ' (' + total + ' results)';
+    prevPageBtn.disabled = currentPage <= 1;
+    nextPageBtn.disabled = currentPage >= totalPages;
+    paginationEl.classList.toggle('show', total > 0);
+  }
+
+  function resetPreview() {
+    statsEl.classList.remove('show');
+    statsEl.innerHTML = '';
+    matrixWrap.classList.remove('show');
+    matrixBody.innerHTML = '';
+    downloadActions.style.display = 'none';
+    heroTrace.classList.remove('show');
+    heroTrace.innerHTML = '';
+    diagramActions.style.display = 'none';
+    filtersEl.classList.remove('show');
+    filterCoverage.value = 'all';
+    filterDefect.value = 'all';
+    paginationEl.classList.remove('show');
+    pageSizeEl.value = '10';
+    pageSize = 10;
+    currentPage = 1;
+    filteredRows = [];
+    rtmRows = null;
   }
 
   // ---------- events ----------
@@ -327,6 +422,24 @@
 
   filterCoverage.addEventListener('change', applyFilters);
   filterDefect.addEventListener('change', applyFilters);
+
+  pageSizeEl.addEventListener('change', () => {
+    pageSize = parseInt(pageSizeEl.value, 10) || 10;
+    currentPage = 1;
+    renderPaginated();
+  });
+
+  prevPageBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderPaginated();
+    }
+  });
+
+  nextPageBtn.addEventListener('click', () => {
+    currentPage++;
+    renderPaginated();
+  });
 
   downloadDiagramBtn.addEventListener('click', () => {
     if (!parsedTable || !colMap) return;
