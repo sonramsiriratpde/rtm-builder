@@ -133,6 +133,43 @@
       .join(', ');
   }
 
+  // function renderMatrix(rows) {
+  //   matrixBody.innerHTML = rows
+  //     .map((r) => {
+  //       const testsHtml = r.tests.length
+  //         ? '<span class="id-list">' + r.tests.map(escHtml).join(', ') + '</span>'
+  //         : '<span class="id-list empty">—</span>';
+  //       const defsHtml = r.defects.length
+  //         ? '<span class="id-list">' + r.defects.map(escHtml).join(', ') + '</span>'
+  //         : '<span class="id-list empty">—</span>';
+  //       const covBadge = r.covered
+  //         ? '<span class="badge covered">Covered</span>'
+  //         : '<span class="badge not-covered">Not covered</span>';
+  //       const defBadge = r.hasDefects
+  //         ? '<span class="badge hasdefect">Has defects</span>'
+  //         : '<span class="badge clear">Clear</span>';
+
+  //       return (
+  //         '<tr>' +
+  //         '<td class="req-id">' + escHtml(r.reqId) + '</td>' +
+  //         '<td>' + testsHtml + '</td>' +
+  //         '<td>' + defsHtml + '</td>' +
+  //         '<td>' + covBadge + '</td>' +
+  //         '<td>' + defBadge + '</td>' +
+  //         '</tr>'
+  //       );
+  //     })
+  //     .join('');
+
+  //   matrixWrap.classList.add('show');
+  //   downloadActions.style.display = 'flex';
+  // }
+
+  // function renderDiagram(table, map) {
+  //   heroTrace.innerHTML = buildTraceSVG(table, map);
+  //   heroTrace.classList.add('show');
+  // }
+
   function renderMatrix(rows) {
     matrixBody.innerHTML = rows
       .map((r) => {
@@ -140,7 +177,7 @@
           ? '<span class="id-list">' + r.tests.map(escHtml).join(', ') + '</span>'
           : '<span class="id-list empty">—</span>';
         const defsHtml = r.defects.length
-          ? '<span class="id-list">' + r.defects.map(escHtml).join(', ') + '</span>'
+          ? '<span class="id-list">' + formatDefects(r) + '</span>'
           : '<span class="id-list empty">—</span>';
         const covBadge = r.covered
           ? '<span class="badge covered">Covered</span>'
@@ -164,11 +201,6 @@
     matrixWrap.classList.add('show');
     downloadActions.style.display = 'flex';
   }
-
-  // function renderDiagram(table, map) {
-  //   heroTrace.innerHTML = buildTraceSVG(table, map);
-  //   heroTrace.classList.add('show');
-  // }
 
   function renderDiagram(table, map) {
     heroTrace.innerHTML = buildTraceSVG(table, map);
