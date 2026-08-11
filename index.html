@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RTM Builder — Requirement Traceability Matrix</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header class="top">
+      <p class="eyebrow">Traceability Tooling</p>
+      <h1>Requirement Traceability Matrix Builder</h1>
+      <p class="sub">Upload a requirement traceability table and get a consolidated RTM — one row per requirement, with
+        every linked test and defect traced against it.</p>
+    </header>
+
+    <!-- Populated by js/diagram.js once a file has been generated; hidden until then. -->
+    <!-- <div class="hero-trace" id="heroTrace" aria-hidden="true"></div> -->
+
+    <section id="step-upload">
+      <h2><span class="step-num">1</span>Upload table</h2>
+      <label class="dropzone" id="dropzone" for="fileInput">
+        <p class="dz-title">Drop a file, or click to browse</p>
+        <p class="dz-sub">.csv &nbsp;·&nbsp; .xlsx / .xls &nbsp;·&nbsp; .md / .markdown</p>
+        <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.md,.markdown,.txt">
+      </label>
+
+      <div class="file-chip" id="fileChip">
+        <span id="fileName"></span>
+        <button type="button" id="clearFile" aria-label="Remove file">✕</button>
+      </div>
+
+      <div class="validation" id="validation" role="status"></div>
+
+      <div class="actions">
+        <button class="btn trace" id="generateBtn" disabled>Generate matrix</button>
+      </div>
+    </section>
+
+    <section id="step-preview">
+      <h2><span class="step-num">2</span>Preview</h2>
+
+      <!-- Populated by js/diagram.js once a file has been generated; hidden until then. -->
+      <div class="hero-trace" id="heroTrace" aria-hidden="true"></div>
+
+      <div class="actions" id="diagramActions" style="display:none;">
+        <button class="btn ghost" id="downloadDiagramBtn">Download full diagram (.png)</button>
+      </div>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="filters" id="filters">
+        <label>Coverage
+          <select id="filterCoverage">
+            <option value="all">All</option>
+            <option value="covered">Covered</option>
+            <option value="not-covered">Not covered</option>
+          </select>
+        </label>
+        <label>Defect status
+          <select id="filterDefect">
+            <option value="all">All</option>
+            <option value="hasdefect">Has defects</option>
+            <option value="clear">Clear</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="matrix-wrap" id="matrixWrap">
+        <table class="matrix" id="matrixTable">
+          <thead>
+            <tr>
+              <th>Requirement</th>
+              <th>Linked tests</th>
+              <th>Linked defects</th>
+              <th>Coverage</th>
+              <th>Defect status</th>
+            </tr>
+          </thead>
+          <tbody id="matrixBody"></tbody>
+        </table>
+      </div>
+
+      <div class="actions" id="downloadActions" style="display:none;">
+        <button class="btn" id="downloadBtn">Download RTM (.md)</button>
+        <button class="btn ghost" id="resetBtn">Start over</button>
+      </div>
+    </section>
+
+    <footer>
+      Runs entirely in your browser — files are parsed locally and never uploaded anywhere.
+    </footer>
+
+  </div>
+
+  <!-- Vendor libraries: CSV and Excel parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- App modules, in dependency order -->
+  <script src="js/parsers.js"></script>
+  <script src="js/rtm.js"></script>
+  <script src="js/diagram.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
