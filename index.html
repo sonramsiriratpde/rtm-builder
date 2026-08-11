@@ -70,6 +70,21 @@
         </label>
       </div>
 
+      <!-- <div class="matrix-wrap" id="matrixWrap">
+        <table class="matrix" id="matrixTable">
+          <thead>
+            <tr>
+              <th>Requirement</th>
+              <th>Linked tests</th>
+              <th>Linked defects</th>
+              <th>Coverage</th>
+              <th>Defect status</th>
+            </tr>
+          </thead>
+          <tbody id="matrixBody"></tbody>
+        </table>
+      </div> -->
+
       <div class="matrix-wrap" id="matrixWrap">
         <table class="matrix" id="matrixTable">
           <thead>
@@ -83,6 +98,22 @@
           </thead>
           <tbody id="matrixBody"></tbody>
         </table>
+      </div>
+
+      <div class="pagination" id="pagination">
+        <label>Rows per page
+          <select id="pageSize">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </label>
+        <div class="page-nav">
+          <button type="button" class="btn ghost" id="prevPageBtn">‹ Prev</button>
+          <span id="pageInfo"></span>
+          <button type="button" class="btn ghost" id="nextPageBtn">Next ›</button>
+        </div>
       </div>
 
       <div class="actions" id="downloadActions" style="display:none;">
