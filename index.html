@@ -18,9 +18,6 @@
         every linked test and defect traced against it.</p>
     </header>
 
-    <!-- Populated by js/diagram.js once a file has been generated; hidden until then. -->
-    <!-- <div class="hero-trace" id="heroTrace" aria-hidden="true"></div> -->
-
     <section id="step-upload">
       <h2><span class="step-num">1</span>Upload table</h2>
       <label class="dropzone" id="dropzone" for="fileInput">
@@ -44,7 +41,7 @@
     <section id="step-preview">
       <h2><span class="step-num">2</span>Preview</h2>
 
-      <!-- Populated by js/diagram.js once a file has been generated; hidden until then. -->
+      <!-- Populated by js/ui/diagramView.js once a file has been generated; hidden until then. -->
       <div class="hero-trace" id="heroTrace" aria-hidden="true"></div>
 
       <div class="actions" id="diagramActions" style="display:none;">
@@ -69,21 +66,6 @@
           </select>
         </label>
       </div>
-
-      <!-- <div class="matrix-wrap" id="matrixWrap">
-        <table class="matrix" id="matrixTable">
-          <thead>
-            <tr>
-              <th>Requirement</th>
-              <th>Linked tests</th>
-              <th>Linked defects</th>
-              <th>Coverage</th>
-              <th>Defect status</th>
-            </tr>
-          </thead>
-          <tbody id="matrixBody"></tbody>
-        </table>
-      </div> -->
 
       <div class="matrix-wrap" id="matrixWrap">
         <table class="matrix" id="matrixTable">
@@ -132,10 +114,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-  <!-- App modules, in dependency order -->
-  <script src="js/parsers.js"></script>
-  <script src="js/rtm.js"></script>
-  <script src="js/diagram.js"></script>
+  <!-- core: pure business logic, no DOM access -->
+  <script src="js/core/parsers.js"></script>
+  <script src="js/core/rtm.js"></script>
+  <script src="js/core/diagram.js"></script>
+
+  <!-- services: state + cross-cutting operations, no rendering -->
+  <script src="js/services/state.js"></script>
+  <script src="js/services/filterService.js"></script>
+  <script src="js/services/exportService.js"></script>
+
+  <!-- ui: one file per screen region, all DOM rendering lives here -->
+  <script src="js/ui/validationView.js"></script>
+  <script src="js/ui/statsView.js"></script>
+  <script src="js/ui/matrixView.js"></script>
+  <script src="js/ui/diagramView.js"></script>
+
+  <!-- app: thin orchestrator wiring events to the above -->
   <script src="js/app.js"></script>
 </body>
 
