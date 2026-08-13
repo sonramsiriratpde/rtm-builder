@@ -98,14 +98,6 @@
     return { reqIds, testIds, defIds, edges };
   }
 
-  // function layoutColumn(ids, x) {
-  //   const shown = ids.slice(0, MAX_NODES_PER_COL);
-  //   const hiddenCount = ids.length - shown.length;
-  //   const nodes = shown.map((id, i) => ({ id, x, y: FIRST_NODE_Y + i * ROW_SPACING }));
-  //   const rowsUsed = nodes.length + (hiddenCount > 0 ? 1 : 0) || 1; // at least 1 row for the "empty" placeholder
-  //   return { nodes, hiddenCount, rowsUsed, x };
-  // }
-
   function layoutColumn(ids, x, maxNodes) {
     maxNodes = maxNodes || MAX_NODES_PER_COL;
     const shown = ids.slice(0, maxNodes);
@@ -115,7 +107,7 @@
     return { nodes, hiddenCount, rowsUsed, x };
   }
 
-    function inlineStyleBlock() {
+  function inlineStyleBlock() {
     return (
       '<style>' +
       '.node{fill:#FAFAF7;stroke:#1B2430;stroke-width:1.4;}' +
@@ -177,30 +169,10 @@
   /**
    * @param {{headers:string[], rows:string[][]}} table
    * @param {{req:number, test:number, def:number}} colMap
+   * @param {{full?: boolean}} [opts] full:true removes the 6-node-per-column cap
+   *   and inlines styles, for canvas/PNG export.
    * @returns {string} SVG markup, ready to inject via innerHTML
    */
-  // function buildTraceSVG(table, colMap) {
-  //   const data = collect(table, colMap);
-
-  //   const reqCol = layoutColumn(data.reqIds, COL_X.req);
-  //   const testCol = layoutColumn(data.testIds, COL_X.test);
-  //   const defCol = layoutColumn(data.defIds, COL_X.def);
-
-  //   const maxRows = Math.max(reqCol.rowsUsed, testCol.rowsUsed, defCol.rowsUsed, 1);
-  //   const height = Math.max(FIRST_NODE_Y + (maxRows - 1) * ROW_SPACING + BOTTOM_PADDING, 90);
-
-  //   const edges = edgeMarkup(data.edges, reqCol, testCol, defCol);
-  //   const nodes = nodeMarkup(reqCol) + nodeMarkup(testCol) + nodeMarkup(defCol);
-
-  //   return (
-  //     `<svg viewBox="0 0 ${VIEWBOX_W} ${height}" xmlns="http://www.w3.org/2000/svg">` +
-  //     headerMarkup() +
-  //     `<g class="edges">${edges}</g>` +
-  //     `<g class="nodes">${nodes}</g>` +
-  //     `</svg>`
-  //   );
-  // }
-  
   function buildTraceSVG(table, colMap, opts) {
     opts = opts || {};
     const cap = opts.full ? Infinity : MAX_NODES_PER_COL;

@@ -21,8 +21,6 @@
   body {
     margin: 0;
     background:
-      /* linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 100% 32px, */
-      /* linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 32px 100%, */
       var(--paper);
     color: var(--ink);
     font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -72,7 +70,6 @@
     margin: 0;
   }
 
-  /* Hero trace diagram — hidden until a file has been generated */
   .hero-trace {
     display: none;
     align-items: center;
@@ -152,7 +149,6 @@
     fill: var(--ink-soft);
   }
 
-  /* Sections */
   section {
     margin-top: 36px;
   }
@@ -182,7 +178,6 @@
     justify-content: center;
   }
 
-  /* Dropzone */
   .dropzone {
     display: flex;
     flex-direction: column;
@@ -250,7 +245,6 @@
     padding: 0;
   }
 
-  /* Validation */
   .validation {
     margin-top: 16px;
     display: none;
@@ -283,7 +277,6 @@
     border-radius: 3px;
   }
 
-  /* Button */
   .btn {
     appearance: none;
     border: 1px solid var(--ink);
@@ -328,7 +321,6 @@
     align-items: center;
   }
 
-  /* Stats strip */
   .stats {
     display: none;
     margin-top: 16px;
@@ -373,7 +365,6 @@
     margin-top: 6px;
   }
 
-  /* Matrix table */
   .matrix-wrap {
     display: none;
     border: 1px solid var(--border);
