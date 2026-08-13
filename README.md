@@ -18,10 +18,20 @@ rtm-builder/
     css/
         styles.css ## All styling and design tokens (CSS custom properties)
     js/
-        parsers.js ## File I/O: CSV / XLSX / Markdown → { headers, rows }
-        rtm.js ## Core matrix logic (pure functions, no DOM)
-        diagram.js ## Builds the trace-diagram SVG from real uploaded rows
-        app.js ## DOM wiring: events, rendering, file handling
+        core/ ## Pure business logic — no DOM access, reusable/testable on its own
+            parsers.js ## File I/O: CSV / XLSX / Markdown → { headers, rows }
+            rtm.js ## Core matrix logic (pure functions)
+            diagram.js ## Builds the trace-diagram SVG from real uploaded rows
+        services/ ## Cross-cutting operations — no DOM rendering
+            state.js ## Single source of truth for app data (parsedTable, colMap, rtmRows, filters, pagination)
+            filterService.js ## Pure filter + pagination math over RTM rows
+            exportService.js ## Blob/canvas/anchor boilerplate for .md and .png downloads
+        ui/ ## DOM rendering — one file per screen region
+            validationView.js ## The validation banner
+            statsView.js ## The stats strip
+            matrixView.js ## The matrix table, filters row, and pagination controls
+            diagramView.js ## The hero trace diagram and its download action
+        app.js ## Thin orchestrator: wires DOM events to services/ and ui/
 ```
 
 The trace diagram at the top of the page is hidden until you generate a
@@ -42,6 +52,9 @@ Both `parsers.js` and `rtm.js` attach to a small global namespace,
 ```js
 window.RTM.parsers.parseCSV(text)
 window.RTM.core.buildRTM(table, colMap)
+window.RTM.state.get()
+window.RTM.filterService.applyFilters(rtmRows, filters)
+window.RTM.ui.matrix.renderRows(rows)
 ```
 
 ## Running it
